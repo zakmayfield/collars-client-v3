@@ -91,8 +91,6 @@ function useProvideAuth() {
 
       setAuthToken(token)
     }
-
-
   }
 
   useEffect(() => {
