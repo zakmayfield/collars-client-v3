@@ -1,19 +1,20 @@
 import {
   ApolloClient,
-  ApolloProvider,
   HttpLink,
   ApolloLink,
   InMemoryCache,
   concat,
 } from '@apollo/client';
 
+import { API_URL } from '@/constants/urls'
+
 const httpLink = new HttpLink({
-  uri: 'http://localhost:4000/graphql',
+  uri: `${API_URL}/graphql`,
   credentials: 'same-origin',
 });
 
 const authMiddleware = new ApolloLink((operation, forward) => {
-  let token = '';
+  let token = process.env.TEST_TOKEN || '';
 
   console.log(`::: token from server creation ::: ${token}`);
 

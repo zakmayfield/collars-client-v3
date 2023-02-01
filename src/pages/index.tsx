@@ -1,15 +1,53 @@
 import Head from 'next/head';
-import { gql } from '@apollo/client';
-import { client } from '@/lib/apollo-config';
-import {  Pet } from '@/gql/graphql'
+import { gql, useMutation } from '@apollo/client';
+import { SyntheticEvent, useState, useContext } from 'react';
+import { useAuth } from 'auth/auth';
 
-type HomeProps = {
-  pets: Pet[]
-}
+type AgencyLogin = {
+  email: string;
+  password: string;
+};
 
-export default function Home({ pets }: HomeProps) {
-  console.log('pets', pets);
+const SignIn = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const { signIn } = useAuth();
 
+  async function onSubmit(e: SyntheticEvent) {
+    e.preventDefault();
+
+    const payload: AgencyLogin = {
+      email,
+      password,
+    };
+
+    signIn(payload);
+  }
+
+  return (
+    <>
+      <form onSubmit={onSubmit}>
+        <input
+          type='text'
+          name='email'
+          placeholder='email'
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <input
+          type='password'
+          name='password'
+          placeholder='password'
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <button type='submit'>Sign In</button>
+      </form>
+    </>
+  );
+};
+
+export default function Home() {
   return (
     <>
       <Head>
@@ -22,34 +60,9 @@ export default function Home({ pets }: HomeProps) {
       <main>
         <h1>Home ::: /</h1>
         <div>
-          {pets.map((pet) => (
-            <div key={pet.id}>
-              <p>Name: {pet.name}</p>
-              <p>Species: {pet.species}</p>
-            </div>
-          ))}
+          <SignIn />
         </div>
       </main>
     </>
   );
-}
-
-export async function getStaticProps() {
-  const { data } = await client.query({
-
-    query: gql`
-      query Pets {
-        pets {
-          id
-          name
-          species
-          agencyId
-        }
-      }
-    `,
-  });
-
-  return {
-    props: data
-  };
 }
