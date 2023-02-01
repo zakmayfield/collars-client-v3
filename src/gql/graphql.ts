@@ -1,4 +1,5 @@
 /* eslint-disable */
+import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/core';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -317,3 +318,11 @@ export type UsersToPets = {
   user: User;
   userId: Scalars['Int'];
 };
+
+export type PetsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type PetsQuery = { __typename?: 'Query', pets: Array<{ __typename?: 'Pet', id: string, name: string, species: Species, agencyId: number } | null> };
+
+
+export const PetsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Pets"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"pets"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"species"}},{"kind":"Field","name":{"kind":"Name","value":"agencyId"}}]}}]}}]} as unknown as DocumentNode<PetsQuery, PetsQueryVariables>;
