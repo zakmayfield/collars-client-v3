@@ -1,7 +1,6 @@
-import SignIn from '@/components/SignIn';
 import Head from 'next/head';
 
-export default function Home() {
+export default function Dashboard() {
   return (
     <>
       <Head>
@@ -12,9 +11,9 @@ export default function Home() {
       </Head>
 
       <main>
-        <h1>Home ::: /</h1>
+        <h1>Dashboard ::: /dashboard</h1>
         <div>
-          <SignIn />
+         
         </div>
       </main>
     </>

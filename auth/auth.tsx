@@ -1,4 +1,4 @@
-import { useState, useContext, createContext } from 'react';
+import { useState, useContext, createContext, PropsWithChildren } from 'react';
 import {
   ApolloClient,
   ApolloProvider,
@@ -6,26 +6,18 @@ import {
   InMemoryCache,
   gql,
   NormalizedCacheObject,
-  concat
+  concat,
 } from '@apollo/client';
 import { onError } from '@apollo/client/link/error';
-
-type AuthContext = {
-  signIn: ({ email, password }: SignInProps) => Promise<void>;
-  createApolloClient: () => ApolloClient<NormalizedCacheObject>;
-};
-
-interface SignInProps {
-  email: string;
-  password: string;
-}
+import { LOGIN_AGENCY } from '@/schema';
+import { SignInParams, AuthContext, AuthHeaders } from '@/types';
 
 const authContext = createContext<AuthContext>(null!);
 
 function useProvideAuth() {
   const [authToken, setAuthToken] = useState('');
 
-  function getAuthHeaders() {
+  function getAuthHeaders(): AuthHeaders {
     let token: string = authToken;
 
     return {
@@ -33,7 +25,7 @@ function useProvideAuth() {
     };
   }
 
-  function createApolloClient() {
+  function createApolloClient(): ApolloClient<NormalizedCacheObject> {
     const httpLink = new HttpLink({
       uri: `http://localhost:4000/graphql`,
       credentials: 'same-origin',
@@ -58,9 +50,7 @@ function useProvideAuth() {
     const errorLink = onError(({ graphQLErrors, networkError }) => {
       if (graphQLErrors)
         graphQLErrors.forEach(({ message, path }) =>
-          console.log(
-            `[GraphQL error] ::: ${message} ::: ${path}`
-          )
+          console.log(`[GraphQL error] ::: ${message} ::: ${path}`)
         );
 
       if (networkError) console.log(`[Network error]: ${networkError}`);
@@ -78,26 +68,15 @@ function useProvideAuth() {
     });
   }
 
-  async function signIn({ email, password }: SignInProps) {
+  async function signIn({ email, password }: SignInParams) {
     const client = createApolloClient();
-
-    const LOGIN_AGENCY = gql`
-      mutation LoginAgency($input: LoginAgency!) {
-        loginAgency(input: $input) {
-          id
-          name
-          email
-          token
-        }
-      }
-    `;
 
     const { data } = await client.mutate({
       mutation: LOGIN_AGENCY,
       variables: { input: { email, password } },
     });
 
-    console.log(`::: signIn :::`, data.loginAgency)
+    console.log(`::: signIn :::`, data.loginAgency);
 
     if (data?.loginAgency) {
       let token: string = data.loginAgency.token;
@@ -112,7 +91,7 @@ function useProvideAuth() {
   };
 }
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
+export function AuthProvider({ children }: PropsWithChildren) {
   const auth = useProvideAuth();
 
   return (

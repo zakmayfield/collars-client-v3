@@ -1,16 +1,6 @@
 import { Pet } from '@/gql/graphql';
-import { useQuery, gql } from '@apollo/client';
-
-const PETS = gql`
-  query Pets {
-    pets {
-      id
-      name
-      species
-      agencyId
-    }
-  }
-`;
+import { useQuery } from '@apollo/client';
+import { PETS } from '@/schema'
 
 export default function Pets() {
   const { data, loading, error } = useQuery(PETS);
@@ -24,7 +14,7 @@ export default function Pets() {
     return null;
   }
 
-  const pets = data.pets;
+  const pets: Pet[] = data.pets;
 
   return (
     <div>
