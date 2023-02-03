@@ -92,13 +92,15 @@ function useProvideAuth() {
       }
     `;
 
-    const results = await client.mutate({
+    const { data } = await client.mutate({
       mutation: LOGIN_AGENCY,
       variables: { input: { email, password } },
     });
 
-    if (results?.data?.loginAgency) {
-      let token: string = results.data.loginAgency.token;
+    console.log(`::: signIn :::`, data.loginAgency)
+
+    if (data?.loginAgency) {
+      let token: string = data.loginAgency.token;
 
       setAuthToken(token);
     }
