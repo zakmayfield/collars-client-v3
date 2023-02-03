@@ -1,18 +1,19 @@
-import { useState, useEffect, useContext, createContext } from 'react';
+import { useState, useContext, createContext } from 'react';
 import {
   ApolloClient,
   ApolloProvider,
   HttpLink,
-  ApolloLink,
   InMemoryCache,
-  concat,
   gql,
+  NormalizedCacheObject,
+  concat
 } from '@apollo/client';
+import { onError } from '@apollo/client/link/error';
 
 type AuthContext = {
-  signIn: ({ email, password}: SignInProps) => void;
-  createApolloClient: () => void;
-}
+  signIn: ({ email, password }: SignInProps) => Promise<void>;
+  createApolloClient: () => ApolloClient<NormalizedCacheObject>;
+};
 
 interface SignInProps {
   email: string;
@@ -54,9 +55,19 @@ function useProvideAuth() {
     //   return forward(operation);
     // });
 
+    const errorLink = onError(({ graphQLErrors, networkError }) => {
+      if (graphQLErrors)
+        graphQLErrors.forEach(({ message, path }) =>
+          console.log(
+            `[GraphQL error] ::: ${message} ::: ${path}`
+          )
+        );
+
+      if (networkError) console.log(`[Network error]: ${networkError}`);
+    });
+
     return new ApolloClient({
-      link: httpLink,
-      // link: concat(authMiddleware, httpLink),
+      link: concat(errorLink, httpLink),
       cache: new InMemoryCache(),
       name: 'collars-client-v3',
       defaultOptions: {
@@ -87,15 +98,11 @@ function useProvideAuth() {
     });
 
     if (results?.data?.loginAgency) {
-      let token: string = results.data.loginAgency.token
+      let token: string = results.data.loginAgency.token;
 
-      setAuthToken(token)
+      setAuthToken(token);
     }
   }
-
-  useEffect(() => {
-    console.log(`token from useAuth/useProvideAuth ${authToken}`)
-  }, [authToken])
 
   return {
     createApolloClient,

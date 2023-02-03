@@ -1,6 +1,5 @@
 import Head from 'next/head';
-import { gql, useMutation } from '@apollo/client';
-import { SyntheticEvent, useState, useContext } from 'react';
+import { SyntheticEvent, useState } from 'react';
 import { useAuth } from 'auth/auth';
 
 type AgencyLogin = {
@@ -9,6 +8,7 @@ type AgencyLogin = {
 };
 
 const SignIn = () => {
+  const [, setError] = useState(null);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const { signIn } = useAuth();
@@ -21,7 +21,7 @@ const SignIn = () => {
       password,
     };
 
-    signIn(payload);
+    signIn(payload).catch((err) => setError(err));
   }
 
   return (
