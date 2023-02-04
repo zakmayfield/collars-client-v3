@@ -78,7 +78,7 @@ function useProvideAuth() {
 
     console.log(`::: signIn :::`, data.loginAgency);
 
-    if (data?.loginAgency) {
+    if (data?.loginAgency?.token) {
       let token: string = data.loginAgency.token;
 
       setAuthToken(token);

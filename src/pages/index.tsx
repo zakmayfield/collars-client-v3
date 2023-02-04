@@ -1,4 +1,6 @@
+import PetFeed from '@/components/PetFeed';
 import SignIn from '@/components/SignIn';
+
 import Head from 'next/head';
 
 export default function Home() {
@@ -15,6 +17,11 @@ export default function Home() {
         <h1>Home ::: /</h1>
         <div>
           <SignIn />
+
+          <div>
+            Pet Feed:
+            <PetFeed />
+          </div>
         </div>
       </main>
     </>

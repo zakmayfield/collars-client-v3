@@ -13,7 +13,7 @@ const SignIn = () => {
       email,
       password,
     };
-    signIn(payload).catch((err) => setError(err));
+    signIn(payload);
   };
 
   const {
