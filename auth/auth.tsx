@@ -3,12 +3,13 @@ import {
   ApolloClient,
   ApolloProvider,
   HttpLink,
+  ApolloLink,
   InMemoryCache,
-  gql,
   NormalizedCacheObject,
   concat,
 } from '@apollo/client';
 import { onError } from '@apollo/client/link/error';
+import { setContext } from '@apollo/client/link/context';
 import { LOGIN_AGENCY } from '@/schema';
 import { SignInParams, AuthContext, AuthHeaders } from '@/types';
 
